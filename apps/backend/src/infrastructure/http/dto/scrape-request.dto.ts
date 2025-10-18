@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, MaxLength, IsArray, IsOptional } from 'class-validator';
 
 /**
  * DTO pour la requête de scraping d'offres.
@@ -15,5 +15,14 @@ export class ScrapeRequestDto {
   @MinLength(2, { message: 'La requête doit contenir au moins 2 caractères' })
   @MaxLength(200, { message: 'La requête ne peut pas dépasser 200 caractères' })
   query!: string;
+
+  /**
+   * Sources à interroger (optionnel, par défaut toutes les sources)
+   * 
+   * @example ["HelloWork", "Arbeitnow"]
+   */
+  @IsArray({ message: 'Les sources doivent être un tableau' })
+  @IsOptional()
+  sources?: string[];
 }
 

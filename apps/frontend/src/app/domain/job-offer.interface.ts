@@ -10,6 +10,7 @@ export interface JobOffer {
   publishedAt: string;
   canonicalUrl: string;
   description: string;
+  source: string;
   contractType?: string;
   salary?: {
     min?: number;

@@ -1,47 +1,95 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JobOffer } from '../../domain/entities/job-offer.entity';
+import { HelloWorkAdapter } from '../../infrastructure/sources/hellowork.adapter';
+import { FranceTravailAdapter } from '../../infrastructure/sources/france-travail.adapter';
+import { ArbeitnowAdapter } from '../../infrastructure/sources/arbeitnow.adapter';
+import { NormalizerService } from '../../infrastructure/services/normalizer.service';
 import { ISourceAdapter } from '../../domain/ports/source-adapter.interface';
-import { INormalizer } from '../../domain/ports/normalizer.interface';
 
 /**
- * Use Case : Scraper et normaliser les offres d'emploi.
+ * Use Case : Scraper et normaliser les offres d'emploi depuis plusieurs sources.
  * 
  * Orchestration du flux :
- * 1. Scraper les offres depuis la source (HelloWork)
+ * 1. Scraper les offres depuis toutes les sources en parallèle
  * 2. Normaliser les données brutes vers le modèle pivot
- * 3. Retourner les offres normalisées
+ * 3. Retourner les offres normalisées agrégées
+ * 
+ * Note : Pour le MVP, on injecte directement les classes concrètes.
+ * Post-MVP : Utiliser @Inject() avec des tokens pour respecter DIP.
  */
 @Injectable()
 export class ScrapeOffersUseCase {
   private readonly logger = new Logger(ScrapeOffersUseCase.name);
+  private readonly adapters: ISourceAdapter[];
 
   constructor(
-    private readonly sourceAdapter: ISourceAdapter,
-    private readonly normalizer: INormalizer
-  ) {}
+    private readonly helloWorkAdapter: HelloWorkAdapter,
+    private readonly franceTravailAdapter: FranceTravailAdapter,
+    private readonly arbeitnowAdapter: ArbeitnowAdapter,
+    private readonly normalizer: NormalizerService
+  ) {
+    // Liste des adapters disponibles (3 sources)
+    this.adapters = [
+      this.helloWorkAdapter,
+      this.franceTravailAdapter,
+      this.arbeitnowAdapter,
+    ];
+  }
 
   /**
-   * Exécute le scraping et la normalisation des offres.
+   * Exécute le scraping et la normalisation des offres depuis les sources sélectionnées.
+   * Les sources sont interrogées en parallèle pour optimiser la performance.
    * 
    * @param query Termes de recherche
-   * @returns Liste des offres normalisées
-   * @throws {Error} En cas d'échec du scraping ou de normalisation
+   * @param selectedSources Sources à interroger (optionnel, toutes par défaut)
+   * @returns Liste des offres normalisées agrégées des sources sélectionnées
+   * @throws {Error} En cas d'échec de tous les scrapers
    */
-  async execute(query: string): Promise<JobOffer[]> {
-    this.logger.log(`🚀 Lancement du scraping pour : "${query}"`);
+  async execute(query: string, selectedSources?: string[]): Promise<JobOffer[]> {
+    this.logger.log(`🚀 Lancement du scraping multi-sources pour : "${query}"`);
     
+    const startTime = Date.now();
+
     try {
-      // Étape 1 : Scraper les offres brutes
-      const startTime = Date.now();
-      const rawOffers = await this.sourceAdapter.scrape(query);
-      const scrapeDuration = Date.now() - startTime;
-      
-      this.logger.log(
-        `📊 ${rawOffers.length} offres brutes extraites en ${scrapeDuration}ms depuis ${this.sourceAdapter.name}`
+      // Filtrer les adapters selon les sources sélectionnées
+      const activeAdapters = selectedSources && selectedSources.length > 0
+        ? this.adapters.filter(adapter => selectedSources.includes(adapter.name))
+        : this.adapters;
+
+      if (activeAdapters.length === 0) {
+        this.logger.warn('⚠️ Aucune source sélectionnée ou valide');
+        return [];
+      }
+
+      this.logger.log(`📡 Sources actives: ${activeAdapters.map(a => a.name).join(', ')}`);
+
+      // Étape 1 : Scraper les sources actives en parallèle
+      const scrapingPromises = activeAdapters.map(adapter => 
+        adapter.scrape(query).catch(error => {
+          const message = error instanceof Error ? error.message : 'Erreur inconnue';
+          this.logger.warn(`⚠️ Échec du scraping ${adapter.name}: ${message}`);
+          return []; // Retourner tableau vide en cas d'échec
+        })
       );
 
-      if (rawOffers.length === 0) {
-        this.logger.warn('⚠️ Aucune offre trouvée pour cette recherche');
+      const results = await Promise.all(scrapingPromises);
+      
+      // Fusionner tous les résultats
+      const allRawOffers = results.flat();
+      const scrapeDuration = Date.now() - startTime;
+
+      // Comptage par source
+      results.forEach((offers, index) => {
+        const adapter = this.adapters[index];
+        this.logger.log(`📊 ${offers.length} offres de ${adapter.name}`);
+      });
+
+      this.logger.log(
+        `📊 Total: ${allRawOffers.length} offres brutes extraites en ${scrapeDuration}ms`
+      );
+
+      if (allRawOffers.length === 0) {
+        this.logger.warn('⚠️ Aucune offre trouvée sur aucune source');
         return [];
       }
 
@@ -49,7 +97,7 @@ export class ScrapeOffersUseCase {
       const normalizedOffers: JobOffer[] = [];
       let failedCount = 0;
 
-      for (const rawOffer of rawOffers) {
+      for (const rawOffer of allRawOffers) {
         try {
           const normalized = this.normalizer.toPivot(rawOffer);
           normalizedOffers.push(normalized);

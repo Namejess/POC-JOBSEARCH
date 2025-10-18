@@ -18,11 +18,13 @@ export class SearchService {
    * Lance le scraping et la recherche d'offres pour une requête donnée.
    *
    * @param query Termes de recherche
+   * @param sources Sources à interroger (optionnel)
    * @returns Observable de la réponse contenant les offres
    */
-  scrapeOffers(query: string): Observable<ScrapeResponse> {
+  scrapeOffers(query: string, sources?: string[]): Observable<ScrapeResponse> {
     return this.http.post<ScrapeResponse>(`${this.apiUrl}/offers/scrape`, {
       query,
+      sources,
     });
   }
 }

@@ -3,164 +3,161 @@ import { CommonModule } from '@angular/common';
 import { JobOffer } from '../../../domain/job-offer.interface';
 
 /**
- * Composant de présentation pour afficher une liste d'offres d'emploi.
- * Utilise Tailwind CSS pour le styling.
+ * Composant DataTable pour afficher les offres d'emploi.
+ * Design TailAdmin professionnel.
  */
 @Component({
   selector: 'app-offer-list',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="space-y-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <!-- En-tête -->
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Résultats de recherche
+          <span *ngIf="offers.length > 0" class="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+            ({{ offers.length }} offres)
+          </span>
+        </h2>
+      </div>
+
       <!-- Message si aucune offre -->
-      <div
-        *ngIf="offers.length === 0"
-        class="text-center py-12 text-gray-500"
-      >
-        <svg
-          class="mx-auto h-12 w-12 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
+      <div *ngIf="offers.length === 0" class="px-6 py-16 text-center">
+        <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <p class="mt-4 text-lg font-medium">Aucune offre trouvée</p>
-        <p class="mt-2 text-sm">
-          Essayez une autre recherche ou modifiez vos critères
+        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">Aucune offre trouvée</h3>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          Lancez une recherche pour voir les offres d'emploi
         </p>
       </div>
 
-      <!-- Liste des offres -->
-      <div *ngFor="let offer of offers" class="card">
-        <!-- En-tête de la carte -->
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex-1">
-            <h3 class="text-xl font-semibold text-gray-900 mb-1">
-              {{ offer.title }}
-            </h3>
-            <p class="text-lg text-gray-700 font-medium">
-              {{ offer.company }}
-            </p>
-          </div>
-          <span
-            *ngIf="offer.contractType"
-            [class]="getContractTypeBadgeClass(offer.contractType)"
-            class="badge"
-          >
-            {{ offer.contractType }}
-          </span>
-        </div>
+      <!-- Tableau des offres -->
+      <div *ngIf="offers.length > 0" class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Poste
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Entreprise
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Localisation
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Contrat
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Salaire
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Source
+              </th>
+              <th class="px-6 py-4 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tr *ngFor="let offer of offers" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <!-- Poste -->
+              <td class="px-6 py-4">
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    {{ offer.title }}
+                  </span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {{ formatDate(offer.publishedAt) }}
+                  </span>
+                </div>
+              </td>
 
-        <!-- Informations supplémentaires -->
-        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
-          <!-- Localisation -->
-          <div class="flex items-center gap-1">
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <span>{{ offer.location }}</span>
-          </div>
+              <!-- Entreprise -->
+              <td class="px-6 py-4">
+                <span class="text-sm text-gray-900 dark:text-white">
+                  {{ offer.company }}
+                </span>
+              </td>
 
-          <!-- Date de publication -->
-          <div class="flex items-center gap-1">
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span>{{ formatDate(offer.publishedAt) }}</span>
-          </div>
+              <!-- Localisation -->
+              <td class="px-6 py-4">
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {{ offer.location }}
+                </span>
+              </td>
 
-          <!-- Salaire -->
-          <div *ngIf="offer.salary" class="flex items-center gap-1">
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>{{ formatSalary(offer.salary) }}</span>
-          </div>
-        </div>
+              <!-- Contrat -->
+              <td class="px-6 py-4">
+                <span 
+                  *ngIf="offer.contractType"
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': offer.contractType.toLowerCase().includes('cdi'),
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': offer.contractType.toLowerCase().includes('cdd'),
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': offer.contractType.toLowerCase().includes('stage'),
+                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': offer.contractType.toLowerCase().includes('alternance'),
+                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': offer.contractType.toLowerCase().includes('freelance') || offer.contractType.toLowerCase().includes('intérim'),
+                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': 
+                      !offer.contractType.toLowerCase().includes('cdi') && 
+                      !offer.contractType.toLowerCase().includes('cdd') && 
+                      !offer.contractType.toLowerCase().includes('stage') && 
+                      !offer.contractType.toLowerCase().includes('alternance') && 
+                      !offer.contractType.toLowerCase().includes('freelance') && 
+                      !offer.contractType.toLowerCase().includes('intérim')
+                  }"
+                >
+                  {{ offer.contractType }}
+                </span>
+                <span *ngIf="!offer.contractType" class="text-sm text-gray-400 dark:text-gray-500">
+                  Non spécifié
+                </span>
+              </td>
 
-        <!-- Description (tronquée) -->
-        <p class="text-gray-700 mb-4 line-clamp-3">
-          {{ offer.description }}
-        </p>
+              <!-- Salaire -->
+              <td class="px-6 py-4">
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                  {{ formatSalary(offer.salary) }}
+                </span>
+              </td>
 
-        <!-- Compétences -->
-        <div *ngIf="offer.skills && offer.skills.length > 0" class="mb-4">
-          <div class="flex flex-wrap gap-2">
-            <span
-              *ngFor="let skill of offer.skills"
-              class="badge badge-default text-xs"
-            >
-              {{ skill }}
-            </span>
-          </div>
-        </div>
+              <!-- Source -->
+              <td class="px-6 py-4">
+                <span 
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="{
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': offer.source.toLowerCase().includes('hellowork'),
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': offer.source.toLowerCase().includes('france') || offer.source.toLowerCase().includes('travail'),
+                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': offer.source.toLowerCase().includes('arbeitnow'),
+                    'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': 
+                      !offer.source.toLowerCase().includes('hellowork') && 
+                      !offer.source.toLowerCase().includes('france') && 
+                      !offer.source.toLowerCase().includes('arbeitnow')
+                  }"
+                >
+                  {{ offer.source }}
+                </span>
+              </td>
 
-        <!-- Bouton voir l'offre -->
-        <div class="flex justify-end">
-          <a
-            [href]="offer.canonicalUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
-          >
-            Voir l'offre
-            <svg
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </a>
-        </div>
+              <!-- Action -->
+              <td class="px-6 py-4 text-right">
+                <a
+                  [href]="offer.canonicalUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                >
+                  Voir l'offre
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   `,
@@ -168,22 +165,6 @@ import { JobOffer } from '../../../domain/job-offer.interface';
 export class OfferListComponent {
   @Input() offers: JobOffer[] = [];
 
-  /**
-   * Retourne la classe CSS pour le badge du type de contrat.
-   */
-  getContractTypeBadgeClass(contractType: string): string {
-    const type = contractType.toLowerCase();
-    if (type.includes('cdi')) return 'badge-cdi';
-    if (type.includes('cdd')) return 'badge-cdd';
-    if (type.includes('stage')) return 'badge-stage';
-    if (type.includes('alternance')) return 'badge-alternance';
-    if (type.includes('freelance')) return 'badge-freelance';
-    return 'badge-default';
-  }
-
-  /**
-   * Formate la date de publication de manière lisible.
-   */
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     const now = new Date();
@@ -192,28 +173,29 @@ export class OfferListComponent {
 
     if (diffDays === 0) return "Aujourd'hui";
     if (diffDays === 1) return 'Hier';
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
-    return date.toLocaleDateString('fr-FR');
+    if (diffDays < 7) return `Il y a ${diffDays}j`;
+    if (diffDays < 30) return `Il y a ${Math.floor(diffDays / 7)} sem.`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  /**
-   * Formate le salaire de manière lisible.
-   */
-  formatSalary(salary: {
-    min?: number;
-    max?: number;
-    currency?: string;
-  }): string {
-    const currency = salary.currency || 'EUR';
-    const symbol = currency === 'EUR' ? '€' : currency;
+  formatSalary(salary?: { min?: number; max?: number; currency?: string }): string {
+    if (!salary) return 'Non précisé';
+    
+    const currency = salary.currency === 'EUR' ? '€' : (salary.currency || '€');
 
     if (salary.min && salary.max) {
-      return `${salary.min / 1000}K - ${salary.max / 1000}K ${symbol}`;
+      return `${this.formatAmount(salary.min)} - ${this.formatAmount(salary.max)} ${currency}`;
     }
     if (salary.min) {
-      return `${salary.min / 1000}K ${symbol}`;
+      return `${this.formatAmount(salary.min)} ${currency}`;
     }
     return 'Non précisé';
   }
-}
 
+  private formatAmount(amount: number): string {
+    if (amount >= 1000) {
+      return `${Math.round(amount / 1000)}K`;
+    }
+    return amount.toString();
+  }
+}

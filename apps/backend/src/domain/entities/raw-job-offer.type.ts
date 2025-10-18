@@ -9,6 +9,7 @@ export interface RawJobOffer {
   publishedAt: string | Date;
   url: string;
   description: string;
+  source: string;
   contractType?: string;
   salary?: string;
   [key: string]: unknown;

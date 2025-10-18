@@ -9,6 +9,8 @@ import { ScrapeOffersUseCase } from './application/use-cases/scrape-offers.useca
 
 // Infrastructure Services
 import { HelloWorkAdapter } from './infrastructure/sources/hellowork.adapter';
+import { FranceTravailAdapter } from './infrastructure/sources/france-travail.adapter';
+import { ArbeitnowAdapter } from './infrastructure/sources/arbeitnow.adapter';
 import { NormalizerService } from './infrastructure/services/normalizer.service';
 
 // Domain Ports (interfaces - pas besoin d'import pour DI)
@@ -29,18 +31,10 @@ import { NormalizerService } from './infrastructure/services/normalizer.service'
     // Use Cases
     ScrapeOffersUseCase,
 
-    // Infrastructure : Adapters
-    {
-      provide: 'ISourceAdapter',
-      useClass: HelloWorkAdapter,
-    },
+    // Infrastructure : Adapters et Services
     HelloWorkAdapter,
-
-    // Infrastructure : Services
-    {
-      provide: 'INormalizer',
-      useClass: NormalizerService,
-    },
+    FranceTravailAdapter,
+    ArbeitnowAdapter,
     NormalizerService,
   ],
 })

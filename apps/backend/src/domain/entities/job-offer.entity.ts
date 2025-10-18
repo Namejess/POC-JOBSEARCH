@@ -11,6 +11,7 @@ export class JobOffer {
     public readonly publishedAt: Date,
     public readonly canonicalUrl: string,
     public readonly description: string,
+    public readonly source: string,
     public readonly contractType?: string,
     public readonly salary?: { min?: number; max?: number; currency?: string },
     public readonly skills?: string[]

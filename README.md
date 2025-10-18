@@ -1,6 +1,6 @@
 # Job Search MVP - Agrégateur d'offres d'emploi
 
-MVP d'une application web de recherche centralisée et d'agrégation d'offres d'emploi. Cette application scrape les offres depuis **HelloWork**, les normalise et les affiche dans une interface moderne.
+MVP d'une application web de recherche centralisée et d'agrégation d'offres d'emploi. Cette application agrège les offres depuis **3 sources** (HelloWork, France Travail, Arbeitnow), les normalise et les affiche dans une interface moderne.
 
 ## 🎯 Objectif
 
@@ -125,12 +125,31 @@ npm run backend:build
 npm run frontend:build
 ```
 
+## ✨ Fonctionnalités
+
+### Sources d'offres (3)
+- **HelloWork** : Scraping web avec Playwright (jobs France)
+- **France Travail** : API officielle (ex Pôle Emploi) - nécessite clés API gratuites
+- **Arbeitnow** : API gratuite sans authentification (jobs tech Europe)
+
+### Agrégation intelligente
+- Scraping **multi-sources en parallèle** pour performance optimale
+- Normalisation automatique vers un schéma pivot unifié
+- Parsing avancé des salaires (annuels, horaires, fourchettes)
+- Badge de source pour traçabilité
+
+### Interface moderne
+- **DataTable professionnelle** inspirée de TailAdmin
+- Recherche full-text simple et rapide
+- Affichage responsive avec Tailwind CSS
+- Badges colorés pour types de contrat et sources
+
 ## 🛠️ Technologies utilisées
 
 ### Backend
 - **NestJS** : Framework Node.js pour l'API
-- **Crawlee** : Framework de scraping robuste avec throttling et respect du robots.txt
-- **Cheerio** : Parsing HTML léger et rapide
+- **Crawlee + Playwright** : Scraping robuste avec JavaScript rendering
+- **Fetch API** : Appels aux APIs REST (France Travail, Arbeitnow)
 - **class-validator** : Validation des DTOs
 - **TypeScript** : Typage strict
 
@@ -166,13 +185,15 @@ Consultez le dossier `docs/` pour plus de détails :
 ## 🔮 Roadmap future
 
 - [ ] Persistance des offres en base de données (Postgres + Prisma)
-- [ ] Déduplication inter-scraping
-- [ ] Ajout d'autres sources (Apec, Indeed, LinkedIn Jobs)
-- [ ] Filtres avancés (salaire, type de contrat, date)
+- [ ] Déduplication inter-sources par hash
+- [ ] Ajout d'autres sources (Apec, Indeed, LinkedIn Jobs, etc.)
+- [ ] Pagination et tri des résultats
+- [ ] Filtres avancés (salaire, type de contrat, date, source)
 - [ ] Sauvegarde des requêtes favorites
 - [ ] Notifications par email
 - [ ] Export CSV/PDF
 - [ ] Authentification utilisateurs
+- [ ] Cache des résultats pour éviter re-scraping
 
 ## 📄 Licence
 

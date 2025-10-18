@@ -46,16 +46,20 @@ export class OffersController {
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async scrapeOffers(@Body() dto: ScrapeRequestDto) {
-    this.logger.log(`📥 Requête de scraping reçue : "${dto.query}"`);
+    const sourcesInfo = dto.sources && dto.sources.length > 0 
+      ? dto.sources.join(', ') 
+      : 'toutes les sources';
+    this.logger.log(`📥 Requête de scraping reçue : "${dto.query}" (sources: ${sourcesInfo})`);
 
     try {
-      const offers = await this.scrapeOffersUseCase.execute(dto.query);
+      const offers = await this.scrapeOffersUseCase.execute(dto.query, dto.sources);
       
       this.logger.log(`📤 Réponse envoyée : ${offers.length} offres`);
       
       return {
         success: true,
         query: dto.query,
+        sources: dto.sources || ['HelloWork', 'France Travail', 'Arbeitnow'],
         count: offers.length,
         offers,
       };

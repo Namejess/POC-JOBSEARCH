@@ -25,6 +25,7 @@ export class NormalizerService implements INormalizer {
       this.parseDate(raw.publishedAt),
       this.cleanUrl(raw.url),
       this.cleanText(raw.description),
+      raw.source,
       raw.contractType ? this.normalizeContractType(raw.contractType) : undefined,
       raw.salary ? this.parseSalary(raw.salary) : undefined,
       this.extractSkills(raw.description)
@@ -103,7 +104,11 @@ export class NormalizerService implements INormalizer {
 
   /**
    * Parse un salaire depuis une chaîne de caractères.
-   * Format attendu : "30K - 45K EUR" ou "35000 EUR" etc.
+   * Formats gérés : 
+   * - "30K - 45K EUR" ou "30k - 45k €"
+   * - "35000 EUR" ou "35 000 €"
+   * - "40 000 - 50 000 € / an"
+   * - "13,50 - 15,50 € / heure"
    */
   private parseSalary(salaryStr: string): { min?: number; max?: number; currency?: string } | undefined {
     const cleaned = salaryStr.trim().toLowerCase();
@@ -114,28 +119,58 @@ export class NormalizerService implements INormalizer {
     if (cleaned.includes('$') || cleaned.includes('usd')) currency = 'USD';
     if (cleaned.includes('£') || cleaned.includes('gbp')) currency = 'GBP';
     
-    // Extraire les nombres (enlever K, € et autres symboles)
-    const numbers = cleaned
-      .replace(/[^\d\s-]/g, '')
-      .split(/[-à]/)
-      .map(n => n.trim())
-      .filter(n => n.length > 0)
-      .map(n => parseInt(n, 10));
+    // Détecter si c'est un salaire horaire
+    const isHourly = cleaned.includes('heure') || cleaned.includes('hour') || cleaned.includes('/h');
     
-    if (numbers.length === 0) {
+    // Vérifier si on a des "K" (milliers)
+    const hasK = cleaned.includes('k');
+    
+    // Nettoyer et extraire les nombres (garder les virgules pour les décimaux)
+    const cleanedForNumbers = cleaned
+      .replace(/\s+/g, '') // Supprimer les espaces
+      .replace(/[€$£]/g, '') // Supprimer symboles monétaires
+      .replace(/k/g, ''); // Supprimer K
+    
+    // Extraire les nombres (avec décimales)
+    const numberMatches = cleanedForNumbers.match(/\d+[,.]?\d*/g);
+    
+    if (!numberMatches || numberMatches.length === 0) {
       return undefined;
     }
     
-    // Si "K" est présent, multiplier par 1000
-    const multiplier = cleaned.includes('k') ? 1000 : 1;
+    const numbers = numberMatches.map(n => parseFloat(n.replace(',', '.')));
     
-    if (numbers.length === 1) {
-      return { min: numbers[0] * multiplier, currency };
+    // Si c'est horaire, convertir en annuel (base 35h/semaine sur 52 semaines)
+    if (isHourly) {
+      const annualHours = 35 * 52; // ~1820 heures/an
+      if (numbers.length === 1) {
+        return { min: Math.round(numbers[0] * annualHours), currency };
+      }
+      return {
+        min: Math.round(numbers[0] * annualHours),
+        max: Math.round(numbers[1] * annualHours),
+        currency,
+      };
     }
     
+    // Déterminer le multiplicateur pour les salaires annuels
+    let multiplier = 1;
+    if (hasK) {
+      multiplier = 1000;
+    } else if (numbers[0] < 1000 && !hasK && !cleaned.includes(',')) {
+      // Si le nombre est < 1000 sans virgule et pas de "K" explicite, 
+      // c'est probablement en milliers (ex: "40" = "40K")
+      multiplier = 1000;
+    }
+    
+    if (numbers.length === 1) {
+      return { min: Math.round(numbers[0] * multiplier), currency };
+    }
+    
+    // Deux nombres = fourchette min-max
     return {
-      min: numbers[0] * multiplier,
-      max: numbers[1] * multiplier,
+      min: Math.round(numbers[0] * multiplier),
+      max: Math.round(numbers[1] * multiplier),
       currency,
     };
   }
