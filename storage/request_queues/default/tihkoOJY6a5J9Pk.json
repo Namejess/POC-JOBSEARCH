@@ -1,6 +1,6 @@
 {
 	"id": "tihkoOJY6a5J9Pk",
-	"json": "{\"id\":\"tihkoOJY6a5J9Pk\",\"url\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"loadedUrl\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"uniqueKey\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-10-18T18:36:53.096Z\"}",
+	"json": "{\"id\":\"tihkoOJY6a5J9Pk\",\"url\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"loadedUrl\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"uniqueKey\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Developpeur&k_autocomplete=&l=&l_autocomplete=\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-10-18T19:07:22.993Z\"}",
 	"method": "GET",
 	"orderNo": null,
 	"retryCount": 0,

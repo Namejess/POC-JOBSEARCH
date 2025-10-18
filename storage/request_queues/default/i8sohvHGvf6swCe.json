@@ -1,9 +1,0 @@
-{
-	"id": "i8sohvHGvf6swCe",
-	"json": "{\"id\":\"i8sohvHGvf6swCe\",\"url\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Macon&k_autocomplete=&l=&l_autocomplete=\",\"loadedUrl\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Macon&k_autocomplete=&l=&l_autocomplete=\",\"uniqueKey\":\"https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Macon&k_autocomplete=&l=&l_autocomplete=\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-10-18T18:38:44.124Z\"}",
-	"method": "GET",
-	"orderNo": null,
-	"retryCount": 0,
-	"uniqueKey": "https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Macon&k_autocomplete=&l=&l_autocomplete=",
-	"url": "https://www.hellowork.com/fr-fr/emploi/recherche.html?k=Macon&k_autocomplete=&l=&l_autocomplete="
-}

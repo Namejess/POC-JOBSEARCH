@@ -107,18 +107,18 @@ import { JobOffer } from '../../../domain/job-offer.interface';
                   *ngIf="offer.contractType"
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                   [ngClass]="{
-                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': offer.contractType.toLowerCase().includes('cdi'),
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': offer.contractType.toLowerCase().includes('cdd'),
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': offer.contractType.toLowerCase().includes('stage'),
-                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': offer.contractType.toLowerCase().includes('alternance'),
-                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': offer.contractType.toLowerCase().includes('freelance') || offer.contractType.toLowerCase().includes('intérim'),
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': (offer.contractType?.toLowerCase() ?? '').includes('cdi'),
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': (offer.contractType?.toLowerCase() ?? '').includes('cdd'),
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': (offer.contractType?.toLowerCase() ?? '').includes('stage'),
+                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': (offer.contractType?.toLowerCase() ?? '').includes('alternance'),
+                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': (offer.contractType?.toLowerCase() ?? '').includes('freelance') || (offer.contractType?.toLowerCase() ?? '').includes('intérim'),
                     'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': 
-                      !offer.contractType.toLowerCase().includes('cdi') && 
-                      !offer.contractType.toLowerCase().includes('cdd') && 
-                      !offer.contractType.toLowerCase().includes('stage') && 
-                      !offer.contractType.toLowerCase().includes('alternance') && 
-                      !offer.contractType.toLowerCase().includes('freelance') && 
-                      !offer.contractType.toLowerCase().includes('intérim')
+                      !(offer.contractType?.toLowerCase() ?? '').includes('cdi') && 
+                      !(offer.contractType?.toLowerCase() ?? '').includes('cdd') && 
+                      !(offer.contractType?.toLowerCase() ?? '').includes('stage') && 
+                      !(offer.contractType?.toLowerCase() ?? '').includes('alternance') && 
+                      !(offer.contractType?.toLowerCase() ?? '').includes('freelance') && 
+                      !(offer.contractType?.toLowerCase() ?? '').includes('intérim')
                   }"
                 >
                   {{ offer.contractType }}
@@ -140,13 +140,13 @@ import { JobOffer } from '../../../domain/job-offer.interface';
                 <span 
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                   [ngClass]="{
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': offer.source.toLowerCase().includes('hellowork'),
-                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': offer.source.toLowerCase().includes('france') || offer.source.toLowerCase().includes('travail'),
-                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': offer.source.toLowerCase().includes('arbeitnow'),
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': (offer.source?.toLowerCase() ?? '').includes('hellowork'),
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': (offer.source?.toLowerCase() ?? '').includes('france') || (offer.source?.toLowerCase() ?? '').includes('travail'),
+                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': (offer.source?.toLowerCase() ?? '').includes('arbeitnow'),
                     'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': 
-                      !offer.source.toLowerCase().includes('hellowork') && 
-                      !offer.source.toLowerCase().includes('france') && 
-                      !offer.source.toLowerCase().includes('arbeitnow')
+                      !(offer.source?.toLowerCase() ?? '').includes('hellowork') && 
+                      !(offer.source?.toLowerCase() ?? '').includes('france') && 
+                      !(offer.source?.toLowerCase() ?? '').includes('arbeitnow')
                   }"
                 >
                   {{ offer.source }}

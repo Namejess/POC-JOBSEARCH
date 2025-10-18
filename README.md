@@ -143,6 +143,13 @@ npm run frontend:build
 - Recherche full-text simple et rapide
 - Affichage responsive avec Tailwind CSS
 - Badges colorés pour types de contrat et sources
+- **Export email** : Envoi rapide des offres par email (HTML professionnel)
+
+### 📧 Export Email (Resend SMTP)
+
+L'application permet d'envoyer les offres trouvées par email au format HTML professionnel. Un simple clic sur le bouton "Envoyer par email" expédie toutes les offres dans un tableau HTML élégant.
+
+Configuration : Voir [SMTP_SETUP.md](SMTP_SETUP.md) pour les instructions détaillées.
 
 ## 🛠️ Technologies utilisées
 
@@ -190,7 +197,7 @@ Consultez le dossier `docs/` pour plus de détails :
 - [ ] Pagination et tri des résultats
 - [ ] Filtres avancés (salaire, type de contrat, date, source)
 - [ ] Sauvegarde des requêtes favorites
-- [ ] Notifications par email
+- [ ] Notifications automatiques par email (avec planification)
 - [ ] Export CSV/PDF
 - [ ] Authentification utilisateurs
 - [ ] Cache des résultats pour éviter re-scraping

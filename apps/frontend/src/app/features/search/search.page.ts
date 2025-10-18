@@ -119,15 +119,32 @@ import { JobOffer } from '../../domain/job-offer.interface';
           </form>
         </div>
 
-        <!-- Message d'erreur -->
-        <div *ngIf="errorMessage()" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-8">
-          <div class="flex items-start gap-3">
-            <svg class="h-5 w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div class="flex-1">
-              <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Erreur</h3>
-              <p class="mt-1 text-sm text-red-700 dark:text-red-300">{{ errorMessage() }}</p>
+        <!-- Message d'erreur (toast en haut à droite) -->
+        <div 
+          *ngIf="errorMessage()" 
+          class="fixed top-4 right-4 z-50 animate-slide-in-right max-w-md"
+        >
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-red-200 dark:border-red-700 p-4">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0">
+                <div class="flex items-center justify-center w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full">
+                  <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Erreur ⚠️</h3>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ errorMessage() }}</p>
+              </div>
+              <button
+                (click)="errorMessage.set(null)"
+                class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -137,22 +154,145 @@ import { JobOffer } from '../../domain/job-offer.interface';
           [offers]="offers()" 
           (exportByEmail)="onExportEmail()"
         ></app-offer-list>
+      </main>
+    </div>
 
-        <!-- Message de succès export -->
-        <div *ngIf="exportSuccess()" class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
-          <div class="flex items-start gap-3">
-            <svg class="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div class="flex-1">
-              <h3 class="text-sm font-medium text-green-800 dark:text-green-200">Email envoyé !</h3>
-              <p class="mt-1 text-sm text-green-700 dark:text-green-300">
-                Les {{ offers().length }} offres ont été envoyées à jessy_drouin@protonmail.com
+    <!-- Modal de saisie d'email -->
+    <div 
+      *ngIf="showEmailModal()" 
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      (click)="closeEmailModal()"
+    >
+      <!-- Overlay sombre -->
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      
+      <!-- Modal -->
+      <div 
+        class="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 animate-scale-in"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+              <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Envoyer par email
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ offers().length }} offre(s) sélectionnée(s)
               </p>
             </div>
           </div>
+          <button
+            (click)="closeEmailModal()"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          >
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-      </main>
+
+        <!-- Formulaire -->
+        <form (submit)="$event.preventDefault(); sendEmail()">
+          <div class="mb-6">
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Adresse email du destinataire
+            </label>
+            <input
+              type="email"
+              id="email"
+              [(ngModel)]="emailAddress"
+              name="email"
+              required
+              placeholder="exemple@email.com"
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+            />
+            
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              💡 Un email HTML professionnel sera envoyé avec toutes les offres
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              (click)="closeEmailModal()"
+              class="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              [disabled]="isExporting()"
+              class="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            >
+              <span *ngIf="!isExporting()">Envoyer</span>
+              <span *ngIf="isExporting()" class="flex items-center gap-2">
+                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Envoi...
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast notification de succès (position fixe en haut à droite) -->
+    <div 
+      *ngIf="exportSuccess()" 
+      class="fixed top-4 right-4 z-50 animate-slide-in-right"
+      style="animation: slideIn 0.3s ease-out;"
+    >
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-green-200 dark:border-green-700 p-4 max-w-md">
+        <div class="flex items-start gap-3">
+          <!-- Icône de succès avec animation -->
+          <div class="flex-shrink-0">
+            <div class="flex items-center justify-center w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full">
+              <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Contenu -->
+          <div class="flex-1">
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+              Email envoyé avec succès ! 📧
+            </h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {{ offers().length }} offre(s) envoyée(s)
+            </p>
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-500">
+              Vérifiez votre boîte de réception
+            </p>
+          </div>
+          
+          <!-- Bouton fermer -->
+          <button
+            (click)="exportSuccess.set(false)"
+            class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Barre de progression -->
+        <div class="mt-3 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-full bg-green-500 rounded-full animate-progress" style="animation: progress 5s linear;"></div>
+        </div>
+      </div>
     </div>
   `,
 })
@@ -163,6 +303,8 @@ export class SearchPageComponent {
   errorMessage = signal<string | null>(null);
   exportSuccess = signal(false);
   isExporting = signal(false);
+  showEmailModal = signal(false);
+  emailAddress = '';
 
   // Sources disponibles avec leurs descriptions
   availableSources = [
@@ -224,22 +366,54 @@ export class SearchPageComponent {
     }
   }
 
-  async onExportEmail() {
+  /**
+   * Ouvre le modal de saisie d'email
+   */
+  onExportEmail() {
     if (this.offers().length === 0) return;
+    this.emailAddress = 'jessy_drouin@protonmail.com'; // Valeur par défaut
+    this.showEmailModal.set(true);
+  }
+
+  /**
+   * Ferme le modal sans envoyer
+   */
+  closeEmailModal() {
+    this.showEmailModal.set(false);
+    this.emailAddress = '';
+  }
+
+  /**
+   * Envoie l'email après validation de l'adresse
+   */
+  async sendEmail() {
+    if (!this.emailAddress || !this.emailAddress.trim()) {
+      this.errorMessage.set('Veuillez saisir une adresse email');
+      return;
+    }
+
+    // Validation simple de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.emailAddress)) {
+      this.errorMessage.set('Adresse email invalide');
+      return;
+    }
     
     this.isExporting.set(true);
     this.errorMessage.set(null);
     this.exportSuccess.set(false);
+    this.showEmailModal.set(false);
 
     try {
       await firstValueFrom(
         this.searchService.exportEmail(
-          'jessy_drouin@protonmail.com',
+          this.emailAddress,
           this.searchQuery,
           this.offers()
         )
       );
       this.exportSuccess.set(true);
+      this.emailAddress = '';
       
       // Cacher le message de succès après 5 secondes
       setTimeout(() => {
