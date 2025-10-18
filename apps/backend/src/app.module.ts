@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 // Controllers
 import { OffersController } from './infrastructure/http/offers.controller';
+import { RemindersController } from './infrastructure/http/reminders.controller';
 
 // Use Cases
 import { ScrapeOffersUseCase } from './application/use-cases/scrape-offers.usecase';
@@ -13,6 +14,7 @@ import { FranceTravailAdapter } from './infrastructure/sources/france-travail.ad
 import { ArbeitnowAdapter } from './infrastructure/sources/arbeitnow.adapter';
 import { NormalizerService } from './infrastructure/services/normalizer.service';
 import { EmailService } from './infrastructure/services/email.service';
+import { SchedulerService } from './infrastructure/services/scheduler.service';
 
 // Domain Ports (interfaces - pas besoin d'import pour DI)
 
@@ -27,7 +29,7 @@ import { EmailService } from './infrastructure/services/email.service';
       envFilePath: '.env',
     }),
   ],
-  controllers: [OffersController],
+  controllers: [OffersController, RemindersController],
   providers: [
     // Use Cases
     ScrapeOffersUseCase,
@@ -38,6 +40,7 @@ import { EmailService } from './infrastructure/services/email.service';
     ArbeitnowAdapter,
     NormalizerService,
     EmailService,
+    SchedulerService,
   ],
 })
 export class AppModule {}

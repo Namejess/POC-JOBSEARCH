@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { SearchService } from './search.service';
 import { OfferListComponent } from './components/offer-list.component';
+import { RemindersDrawerComponent } from './components/reminders-drawer.component';
 import { JobOffer } from '../../domain/job-offer.interface';
 
 /**
@@ -13,7 +14,7 @@ import { JobOffer } from '../../domain/job-offer.interface';
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, OfferListComponent],
+  imports: [CommonModule, FormsModule, OfferListComponent, RemindersDrawerComponent],
   template: `
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
       <!-- En-tête -->
@@ -60,6 +61,17 @@ import { JobOffer } from '../../domain/job-offer.interface';
                     </svg>
                     Recherche...
                   </span>
+                </button>
+                <button
+                  type="button"
+                  (click)="openRemindersDrawer()"
+                  class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200 flex items-center gap-2"
+                  title="Configurer des rappels par email"
+                >
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  <span class="hidden sm:inline">Rappels</span>
                 </button>
               </div>
             </div>
@@ -294,6 +306,14 @@ import { JobOffer } from '../../domain/job-offer.interface';
         </div>
       </div>
     </div>
+
+    <!-- Drawer des rappels -->
+    <app-reminders-drawer
+      [isOpen]="showRemindersDrawer()"
+      [currentQuery]="searchQuery"
+      [currentSources]="getSelectedSources()"
+      (closeDrawer)="closeRemindersDrawer()"
+    ></app-reminders-drawer>
   `,
 })
 export class SearchPageComponent {
@@ -305,6 +325,7 @@ export class SearchPageComponent {
   isExporting = signal(false);
   showEmailModal = signal(false);
   emailAddress = '';
+  showRemindersDrawer = signal(false);
 
   // Sources disponibles avec leurs descriptions
   availableSources = [
@@ -428,5 +449,19 @@ export class SearchPageComponent {
     } finally {
       this.isExporting.set(false);
     }
+  }
+
+  /**
+   * Ouvre le drawer des rappels
+   */
+  openRemindersDrawer() {
+    this.showRemindersDrawer.set(true);
+  }
+
+  /**
+   * Ferme le drawer des rappels
+   */
+  closeRemindersDrawer() {
+    this.showRemindersDrawer.set(false);
   }
 }

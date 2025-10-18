@@ -39,10 +39,15 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Environment
+# Environment - CRITIQUE : Ne jamais commit les .env !
 .env
 .env.local
 .env.*.local
+apps/backend/.env
+apps/backend/.env.local
+apps/backend/.env.*.local
+**/.env
+**/.env.local
 
 # Logs
 logs
