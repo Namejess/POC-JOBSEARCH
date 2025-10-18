@@ -1,0 +1,286 @@
+# Cursor AI Rules
+
+Vous êtes expert en TypeScript, Angular, Node.js (NestJS ou Express), Postgres, Prisma ORM, Clean Architecture, Domain Driven Design et bonnes pratiques de Clean Code [1].
+
+## Workflow et règles d’interaction (CRITIQUE)
+
+### TOUJOURS demander avant de coder
+- NE JAMAIS écrire, modifier ou supprimer du code sans approbation explicite de l’utilisateur [1].
+- TOUJOURS proposer une solution et attendre la confirmation avant de l’implémenter [1].
+- Lorsqu’une fonctionnalité ou modification est demandée :
+  1. Analyser la demande [1].
+  2. Expliquer ce qui est compris [1].
+  3. Proposer la solution avec :
+     - Fichiers créés/modifiés [1].
+     - Décisions architecturales [1].
+     - Impacts potentiels [1].
+     - Alternatives éventuelles [1].
+  4. Demander : « Dois-je procéder à cette implémentation ? » [1].
+  5. Attendre l’approbation explicite (oui/proceed/go ahead) [1].
+  6. Implémenter uniquement après approbation [1].
+
+### Exception : demande explicite de l’utilisateur
+- Expressions comme « implémente », « fais-le », « go ahead », « proceed » autorisent le codage sans re-demande [1].
+- Expressions comme « montre-moi seulement », « explique seulement » entraînent une réponse sans code [1].
+- En cas de doute, demander la clarification [1].
+
+### Bonnes pratiques en communication
+- Pour chaque fonctionnalité, proposer plusieurs options si possible [1].
+- Discuter des compromis, impacts et alternatives [1].
+- Attendre accord avant mise en œuvre [1].
+
+***
+
+## Langage et documentation
+
+### Documentation en français (OBLIGATOIRE)
+- Tous les commentaires de code doivent être en français (JSDoc et inline) [1].
+- Tous les messages de commit doivent être en français [1].
+- Noms des variables/fonctions restent en anglais pour cohérence [1].
+- Termes techniques peuvent rester en anglais si pas de traduction naturelle [1].
+
+Exemple de documentation (backend):
+
+```typescript
+/**
+ * Exécute la collecte planifiée d'annonces pour une requête donnée.
+ *
+ * @param queryId Identifiant de la requête sauvegardée
+ * @returns Nombre d'annonces nouvellement ingérées
+ * @throws {Error} En cas d'échec d'extraction ou de persistance
+ */
+async runScheduledIngestion(queryId: string): Promise<number> {
+  // Implémentation...
+}
+```
+
+
+***
+
+## Communication et résolution de problèmes
+
+### Toujours proposer avant d’implémenter (OBLIGATOIRE)
+- Expliquer ce qui a été compris [1].
+- Présenter clairement l’architecture proposée [1].
+- Lister fichiers impactés [1].
+- Discuter risques, alternatives, points d’attention [1].
+
+### Exemple de proposition (scraping + normalisation)
+```
+📋 Compréhension:
+Mettre en place un connecteur HelloWork pour exécuter une requête (métier, lieu, date), ingérer les annonces, normaliser au schéma pivot, dédupliquer, puis stocker en base Postgres via Prisma.
+
+🎯 Solution proposée:
+- Domaine: entités JobOffer, Source, Query, IngestionRun.
+- Application: use case IngestOffersForQuery.
+- Infrastructure: adapter HelloWork (HTML scraping ou API), repository Prisma, service Dedup, service Normalizer.
+- Présentation: endpoint REST POST /ingestions/:queryId/execute + page Angular de suivi.
+
+📁 Fichiers impactés:
+- backend/src/domain/job-offer.entity.ts (nouveau)
+- backend/src/application/use-cases/ingest-offers.usecase.ts (nouveau)
+- backend/src/infrastructure/sources/hellowork.adapter.ts (nouveau)
+- backend/src/infrastructure/repositories/job-offer.prisma.repository.ts (nouveau)
+- backend/prisma/schema.prisma (modifié)
+- frontend/src/app/features/ingestions/ingestions.page.ts (nouveau)
+
+🏗️ Décisions architecturales:
+- DDD + Clean Architecture (ports/adapters).
+- Prisma pour persistance Postgres.
+- Déduplication par hash (titre+entreprise+lieu+jour) + fuzzy optionnel.
+
+⚠️ Points d'attention:
+- Respect robots.txt et conditions d'utilisation.
+- Throttling/backoff pour éviter blocage.
+- Robustesse aux changements DOM.
+
+💡 Alternatives:
+- Prioriser API officielles si disponibles.
+- Headless browser (Playwright) si HTML trop dynamique.
+
+❓ Dois-je procéder avec cette implémentation ?
+```
+
+
+***
+
+## Qualité du code et bonnes pratiques
+
+### Principes SOLID
+- SRP: chaque classe/fonction a une responsabilité claire (ex: DeduplicateJobOffersService) [1].
+- OCP: extensible via interfaces (ISourceAdapter, IJobOfferRepository) [1].
+- LSP: respecter contrats d’abstraction [1].
+- ISP: interfaces fines et spécifiques [1].
+- DIP: dépendre d’abstractions, injection partout [1].
+
+### Autres principes Clean Code
+- DRY, KISS, YAGNI [1].
+- Nommage clair, fonctions courtes et modulaires [1].
+- Pas de logique métier dans les contrôleurs; pas d’accès direct Prisma dans les use cases (passer par repository) [1].
+- Validation stricte des DTO côté API (class-validator/zod) [1].
+
+***
+
+## Exemples de structure (monorepo recommandé)
+
+```
+/frontend (Angular)
+  /src/app
+    /domain            (types et services UI-only, pas de logique métier serveur)
+    /features          (pages, composants)
+    /shared            (ui kit, utils)
+    /state             (facades, stores)
+  angular.json
+
+/backend (Node TS)
+  /src
+    /domain
+      job-offer.entity.ts
+      source.entity.ts
+      query.entity.ts
+      value-objects/
+      services/        (ex: deduplication.service.ts, scoring.service.ts)
+      repositories/    (ports: interfaces)
+    /application
+      use-cases/
+        ingest-offers.usecase.ts
+        search-offers.usecase.ts
+        export-offers.usecase.ts
+        schedule-notification.usecase.ts
+    /infrastructure
+      http/            (controllers REST/GraphQL)
+      sources/         (adapters: hellowork.adapter.ts, apec.adapter.ts, ...)
+      persistence/     (prisma: mappers, repositories impl)
+      notifications/   (email, webhooks, rss)
+      scheduling/      (cron/queue: bullmq/agenda)
+      security/        (authN/Z, rate limiting)
+    /config            (env schema, DI container)
+  prisma/schema.prisma
+  package.json
+```
+
+
+***
+
+## Règles de codage avancées (à suivre)
+- Complexité cyclomatique cible ≤ 10; fonction ≤ 50 lignes [1].
+- Pas d’imbrication > 4 niveaux [1].
+- Typage strict TypeScript (noImplicitAny, strictNullChecks) [1].
+- Couverture de tests: unit ≥ 80% domaine/application; intégration sur use cases critiques [1].
+- Lint/format: ESLint + Prettier + import sort, règles de commit conventionnels [1].
+
+***
+
+## Sécurité et conformité
+- Validation des entrées (API et scraping params) [1].
+- Stockage sécurisé des secrets (env, Vault si dispo) [1].
+- RGPD: minimisation, droit à l’export/suppression compte, journalisation accès [1].
+- Scraping responsable: respect robots.txt, throttling, backoff, user-agent identifié, arrêt si blocage répété [1].
+
+***
+
+## Conventions API et persistance
+
+### API
+- REST par défaut; pagination cursor/offset; tri et filtres par facettes [1].
+- DTO versionnés; erreurs normalisées (RFC 7807 ou format interne) [1].
+- Auth: token Bearer; RBAC simple pour partage de requêtes [1].
+
+### Persistance (Prisma + Postgres)
+- Schéma pivot: JobOffer, Source, Query, IngestionRun, ExportJob, NotificationRule [1].
+- Déduplication: hash stable, index unique; historisation par tables _history si nécessaire [1].
+- Migrations via Prisma migrate; seeds pour environnements de dev [1].
+
+***
+
+## Exemples de code (domain + use case)
+
+```typescript
+// domain/job-offer.entity.ts
+export class JobOffer {
+  constructor(
+    public readonly id: string,
+    public readonly title: string,
+    public readonly company: string,
+    public readonly location: string,
+    public readonly publishedAt: Date,
+    public readonly canonicalUrl: string,
+    public readonly salary?: { min?: number; max?: number; currency?: string },
+    public readonly contractType?: string,
+    public readonly skills: string[] = []
+  ) {}
+}
+```
+
+
+```typescript
+// application/use-cases/ingest-offers.usecase.ts
+export class IngestOffersUseCase {
+  constructor(
+    private readonly sourceAdapters: SourceAdapter[],
+    private readonly normalizer: NormalizerService,
+    private readonly repository: JobOfferRepository,
+    private readonly dedup: DeduplicationService
+  ) {}
+
+  /**
+   * Lance l’ingestion multi-sources pour une requête sauvegardée.
+   */
+  async execute(query: SavedQuery): Promise<number> {
+    const rawBatches = await Promise.all(
+      this.sourceAdapters
+        .filter(a => query.enabledSources.includes(a.name))
+        .map(a => a.fetch(query.criteria))
+    )
+    const normalized = rawBatches.flat().map(r => this.normalizer.toPivot(r))
+    const unique = await this.dedup.filterNew(normalized)
+    await this.repository.bulkUpsert(unique)
+    return unique.length
+  }
+}
+```
+
+
+***
+
+## Frontend Angular (lignes directrices)
+- State management simple (signals, RxJS, ou NGXS/NGRX si nécessaire) [1].
+- Services HTTP fins, pas de logique métier lourde côté client [1].
+- Composants présentations vs containers; pagination serveur et facettes UI [1].
+- Accessibilité (ARIA), i18n en option, thèmes sobres [1].
+
+
+### Intégration Tailwind
+- Utiliser Tailwind CSS pour la couche UI (utilitary-first), avec PostCSS et configuration Angular officielle via tailwind.config.js et postcss.config.js [1].  
+- Activer JIT par défaut, purger les templates Angular (html, ts) et générer un design system minimal via tokens (couleurs, spacing, typographie) dans theme.extend [1].  
+
+### Règles frontend Angular
+- Composants “presentational” stylés avec classes Tailwind; composants “container” sans styles denses [1].  
+- Créer un fichier src/styles/tailwind.css avec les directives @tailwind base; @tailwind components; @tailwind utilities; puis l’importer dans angular.json [1].  
+
+### Accessibilité et cohérence
+- Définir des classes utilitaires réutilisables via @apply pour patterns fréquents (boutons, badges, cards) tout en évitant les abstractions prématurées [1].  
+- Respect ARIA et contrastes; prévoir un mode sombre via media query ou classe .dark et configuration Tailwind correspondante [1].  
+
+### Exigences de qualité
+- Interdire l’overrides CSS globaux; privilégier Tailwind et quelques CSS @layer si nécessaire [1].  
+- Documenter les patterns UI (buttons, inputs, tables, alertes) dans un Storybook minimal pour homogénéiser l’UI [1].
+
+
+
+***
+
+## CI/CD et qualité
+- Pipelines: lint, test, build, migrations dry-run, déploiement; preview env pour PRs [1].
+- SAST/secret scan, dependabot/renovate [1].
+- Observabilité backend: logs structurés, métriques par source, traces ingestion [1].
+
+***
+
+## Rappels essentiels
+- DDD + Clean Architecture non négociables [1].
+- Aucune dépendance directe de l’application aux détails Prisma dans le domaine/application (adapter pattern) [1].
+- Toujours proposer avant d’implémenter; les commits et docs sont en français [1].
+
+Sources
+[1] SPECS.md https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/54314045/29298a76-309e-4c43-b02a-df4c330655d4/SPECS.md

@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles personnalisés */
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 text-sm font-medium rounded-full;
+  }
+
+  .badge-cdi {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-cdd {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .badge-stage {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .badge-alternance {
+    @apply bg-orange-100 text-orange-800;
+  }
+
+  .badge-freelance {
+    @apply bg-pink-100 text-pink-800;
+  }
+
+  .badge-default {
+    @apply bg-gray-100 text-gray-800;
+  }
+}
+
+/* Styles de base */
+body {
+  @apply bg-gray-50 text-gray-900;
+}
