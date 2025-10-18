@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobOffer } from '../../../domain/job-offer.interface';
 
@@ -13,13 +13,25 @@ import { JobOffer } from '../../../domain/job-offer.interface';
   template: `
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <!-- En-tête -->
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
           Résultats de recherche
           <span *ngIf="offers.length > 0" class="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
             ({{ offers.length }} offres)
           </span>
         </h2>
+        
+        <!-- Bouton export email -->
+        <button
+          *ngIf="offers.length > 0"
+          (click)="exportByEmail.emit()"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Envoyer par email
+        </button>
       </div>
 
       <!-- Message si aucune offre -->
@@ -164,6 +176,7 @@ import { JobOffer } from '../../../domain/job-offer.interface';
 })
 export class OfferListComponent {
   @Input() offers: JobOffer[] = [];
+  @Output() exportByEmail = new EventEmitter<void>();
 
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);

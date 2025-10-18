@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ScrapeOffersUseCase } from '../../application/use-cases/scrape-offers.usecase';
 import { ScrapeRequestDto } from './dto/scrape-request.dto';
+import { ExportEmailDto } from './dto/export-email.dto';
+import { EmailService } from '../services/email.service';
 
 /**
  * Contrôleur REST pour les offres d'emploi.
@@ -19,7 +21,10 @@ import { ScrapeRequestDto } from './dto/scrape-request.dto';
 export class OffersController {
   private readonly logger = new Logger(OffersController.name);
 
-  constructor(private readonly scrapeOffersUseCase: ScrapeOffersUseCase) {}
+  constructor(
+    private readonly scrapeOffersUseCase: ScrapeOffersUseCase,
+    private readonly emailService: EmailService
+  ) {}
 
   /**
    * POST /api/offers/scrape
@@ -66,6 +71,35 @@ export class OffersController {
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Erreur inconnue';
       this.logger.error(`❌ Erreur lors du scraping : ${message}`);
+      
+      throw error;
+    }
+  }
+
+  /**
+   * POST /api/offers/export-email
+   * Envoie les offres trouvées par email
+   * 
+   * @param dto Données de la requête (email, query, offers)
+   * @returns Confirmation d'envoi
+   */
+  @Post('export-email')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async exportEmail(@Body() dto: ExportEmailDto) {
+    this.logger.log(`📧 Requête d'export email : ${dto.offers.length} offres vers ${dto.email}`);
+
+    try {
+      await this.emailService.sendOffersEmail(dto.email, dto.query, dto.offers);
+      
+      return {
+        success: true,
+        message: `Email envoyé avec succès à ${dto.email}`,
+        offersCount: dto.offers.length,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erreur inconnue';
+      this.logger.error(`❌ Erreur lors de l'envoi de l'email : ${message}`);
       
       throw error;
     }

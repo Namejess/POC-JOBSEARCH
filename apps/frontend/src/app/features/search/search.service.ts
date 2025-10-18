@@ -27,5 +27,21 @@ export class SearchService {
       sources,
     });
   }
+
+  /**
+   * Envoie les offres par email.
+   *
+   * @param email Adresse email destinataire
+   * @param query Termes de recherche
+   * @param offers Liste des offres à envoyer
+   * @returns Observable de la réponse de confirmation
+   */
+  exportEmail(email: string, query: string, offers: any[]): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/offers/export-email`, {
+      email,
+      query,
+      offers,
+    });
+  }
 }
 

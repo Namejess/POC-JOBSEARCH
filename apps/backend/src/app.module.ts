@@ -12,6 +12,7 @@ import { HelloWorkAdapter } from './infrastructure/sources/hellowork.adapter';
 import { FranceTravailAdapter } from './infrastructure/sources/france-travail.adapter';
 import { ArbeitnowAdapter } from './infrastructure/sources/arbeitnow.adapter';
 import { NormalizerService } from './infrastructure/services/normalizer.service';
+import { EmailService } from './infrastructure/services/email.service';
 
 // Domain Ports (interfaces - pas besoin d'import pour DI)
 
@@ -36,6 +37,7 @@ import { NormalizerService } from './infrastructure/services/normalizer.service'
     FranceTravailAdapter,
     ArbeitnowAdapter,
     NormalizerService,
+    EmailService,
   ],
 })
 export class AppModule {}

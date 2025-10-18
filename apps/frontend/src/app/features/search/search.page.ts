@@ -133,7 +133,25 @@ import { JobOffer } from '../../domain/job-offer.interface';
         </div>
 
         <!-- Résultats -->
-        <app-offer-list [offers]="offers()"></app-offer-list>
+        <app-offer-list 
+          [offers]="offers()" 
+          (exportByEmail)="onExportEmail()"
+        ></app-offer-list>
+
+        <!-- Message de succès export -->
+        <div *ngIf="exportSuccess()" class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
+          <div class="flex items-start gap-3">
+            <svg class="h-5 w-5 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <h3 class="text-sm font-medium text-green-800 dark:text-green-200">Email envoyé !</h3>
+              <p class="mt-1 text-sm text-green-700 dark:text-green-300">
+                Les {{ offers().length }} offres ont été envoyées à jessy_drouin@protonmail.com
+              </p>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   `,
@@ -143,6 +161,8 @@ export class SearchPageComponent {
   offers = signal<JobOffer[]>([]);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  exportSuccess = signal(false);
+  isExporting = signal(false);
 
   // Sources disponibles avec leurs descriptions
   availableSources = [
@@ -185,6 +205,7 @@ export class SearchPageComponent {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.exportSuccess.set(false);
 
     try {
       const response = await firstValueFrom(
@@ -200,6 +221,38 @@ export class SearchPageComponent {
       this.offers.set([]);
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  async onExportEmail() {
+    if (this.offers().length === 0) return;
+    
+    this.isExporting.set(true);
+    this.errorMessage.set(null);
+    this.exportSuccess.set(false);
+
+    try {
+      await firstValueFrom(
+        this.searchService.exportEmail(
+          'jessy_drouin@protonmail.com',
+          this.searchQuery,
+          this.offers()
+        )
+      );
+      this.exportSuccess.set(true);
+      
+      // Cacher le message de succès après 5 secondes
+      setTimeout(() => {
+        this.exportSuccess.set(false);
+      }, 5000);
+    } catch (error) {
+      this.errorMessage.set(
+        error instanceof Error 
+          ? error.message 
+          : 'Une erreur est survenue lors de l\'envoi de l\'email'
+      );
+    } finally {
+      this.isExporting.set(false);
     }
   }
 }
