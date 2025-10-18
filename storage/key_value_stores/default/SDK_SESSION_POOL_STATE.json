@@ -3,7 +3,7 @@
   "retiredSessionsCount": 0,
   "sessions": [
     {
-      "id": "session_jsLuJm39Kl",
+      "id": "session_uHghc5Scxw",
       "cookieJar": {
         "version": "tough-cookie@6.0.0",
         "storeType": "MemoryCookieStore",
@@ -16,14 +16,14 @@
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-10-18T19:57:09.318Z",
-      "createdAt": "2025-10-18T19:07:09.318Z",
+      "expiresAt": "2025-10-18T20:20:00.483Z",
+      "createdAt": "2025-10-18T19:30:00.483Z",
       "usageCount": 0,
       "maxUsageCount": 50,
       "errorScore": 0
     },
     {
-      "id": "session_6exMo9b62v",
+      "id": "session_f2i2X5kjNW",
       "cookieJar": {
         "version": "tough-cookie@6.0.0",
         "storeType": "MemoryCookieStore",
@@ -35,96 +35,96 @@
           {
             "key": "hw-cc-gtm",
             "value": "%7B%7D",
-            "expires": "2026-04-18T19:07:11.000Z",
+            "expires": "2026-04-18T19:30:01.000Z",
             "domain": "www.hellowork.com",
             "path": "/",
             "hostOnly": true,
-            "creation": "2025-10-18T19:07:11.805Z",
-            "lastAccessed": "2025-10-18T19:07:11.805Z"
-          },
-          {
-            "key": "_hw_sid",
-            "value": "8481b84f74b916f3",
-            "expires": "2026-11-22T19:07:11.337Z",
-            "domain": "hellowork.com",
-            "path": "/",
-            "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.805Z",
-            "lastAccessed": "2025-10-18T19:07:11.805Z"
+            "creation": "2025-10-18T19:30:02.323Z",
+            "lastAccessed": "2025-10-18T19:30:02.323Z"
           },
           {
             "key": "hw.emploi.web.session",
-            "value": "CfDJ8KDCjjMtjABMtmA3mQOGK2xwzOkO7J7InZ1U23sNXwqqB%2B3gcSfDY4aVpS01xWn%2BS%2FXWJ6qTXKu8ydhryU42VdcMU%2FhWU8%2F6oy6FOcNeJxfZNWCI10m1YthDO7yFSaXqPscrcC5EG2YSESWNx6XhQi0L5yuSKU5NXkd%2B7OXru0zB",
-            "expires": "2025-10-18T19:57:11.803Z",
+            "value": "CfDJ8KDCjjMtjABMtmA3mQOGK2z1Go8XrAulXqoDu083izyt7zKdoY3XRQe6XTvX3EIk36vwWBa4l8tLVpjPw8z3PJoaI%2BdM6GovnctaTowKVUJlDV53rAddA20LqXGjs0R%2BmcokdcnunovmdRtzEqaXAf7VuMgfvZdSTMujWvfMPP%2F5",
+            "expires": "2025-10-18T20:20:02.321Z",
             "domain": "www.hellowork.com",
             "path": "/",
             "httpOnly": true,
             "hostOnly": true,
-            "creation": "2025-10-18T19:07:11.807Z",
-            "lastAccessed": "2025-10-18T19:07:11.807Z"
+            "creation": "2025-10-18T19:30:02.324Z",
+            "lastAccessed": "2025-10-18T19:30:02.324Z"
           },
           {
-            "key": "_hw_cid",
-            "value": "067336e0-98da-4227-8103-13603d74a5c6",
-            "expires": "2026-11-22T19:07:11.612Z",
-            "domain": "hellowork.com",
-            "path": "/",
-            "secure": true,
-            "httpOnly": true,
-            "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.807Z",
-            "lastAccessed": "2025-10-18T19:07:11.807Z"
-          },
-          {
-            "key": "_hw_pid",
-            "value": "bba5c8a3-26b6-479b-af21-9c736107284a",
-            "expires": "2025-10-18T19:57:11.803Z",
+            "key": "_hw_sid",
+            "value": "197b5b2e401c1174",
+            "expires": "2026-11-22T19:30:01.618Z",
             "domain": "hellowork.com",
             "path": "/",
             "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.809Z",
-            "lastAccessed": "2025-10-18T19:07:11.809Z"
+            "creation": "2025-10-18T19:30:02.324Z",
+            "lastAccessed": "2025-10-18T19:30:02.324Z"
           },
           {
             "key": "pa_privacy",
             "value": "%22required%22",
-            "expires": "2026-11-17T19:07:11.000Z",
+            "expires": "2026-11-17T19:30:01.000Z",
             "domain": "hellowork.com",
             "path": "/",
             "secure": true,
             "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.809Z",
-            "lastAccessed": "2025-10-18T19:07:11.809Z"
+            "creation": "2025-10-18T19:30:02.326Z",
+            "lastAccessed": "2025-10-18T19:30:02.326Z"
           },
           {
             "key": "_pcid",
-            "value": "%7B%22browserId%22%3A%22mgwng6td5l2viuyq%22%2C%22_t%22%3A%22mwl4itxg%7Cmgwng6tg%22%7D",
-            "expires": "2026-11-17T20:07:11.000Z",
+            "value": "%7B%22browserId%22%3A%22mgwo9jzv78lu27zf%22%2C%22_t%22%3A%22mwl5c73y%7Cmgwo9jzy%22%7D",
+            "expires": "2026-11-17T20:30:01.000Z",
             "domain": "hellowork.com",
             "path": "/",
             "secure": true,
             "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.809Z",
-            "lastAccessed": "2025-10-18T19:07:11.809Z"
+            "creation": "2025-10-18T19:30:02.328Z",
+            "lastAccessed": "2025-10-18T19:30:02.328Z"
           },
           {
             "key": "_pctx",
-            "value": "%7Bu%7DN4IgrgzgpgThIC4B2YA2qA05owMoBcBDfSREQpAeyRCwgEt8oBJAE0RXSwH18yBbAO6oALIwAeAcwA%2B-SYKSSAbPkkgAvkA",
-            "expires": "2026-11-17T20:07:11.000Z",
+            "value": "%7Bu%7DN4IgrgzgpgThIC4B2YA2qA05owMoBcBDfSREQpAeyRCwgEt8oBJAE0RXSwH18yBbAO6oArAGMA7AGYAXgB9%2BAc0GUAnACsZMkAF8gA",
+            "expires": "2026-11-17T20:30:01.000Z",
             "domain": "hellowork.com",
             "path": "/",
             "secure": true,
             "hostOnly": false,
-            "creation": "2025-10-18T19:07:11.809Z",
-            "lastAccessed": "2025-10-18T19:07:11.809Z"
+            "creation": "2025-10-18T19:30:02.328Z",
+            "lastAccessed": "2025-10-18T19:30:02.328Z"
+          },
+          {
+            "key": "_hw_cid",
+            "value": "88bc1db0-b0b3-4375-a60a-c50dea7f7eb2",
+            "expires": "2026-11-22T19:30:01.851Z",
+            "domain": "hellowork.com",
+            "path": "/",
+            "secure": true,
+            "httpOnly": true,
+            "hostOnly": false,
+            "creation": "2025-10-18T19:30:02.328Z",
+            "lastAccessed": "2025-10-18T19:30:02.328Z"
+          },
+          {
+            "key": "_hw_pid",
+            "value": "3d8f6821-7358-4432-b240-904ccc805cf5",
+            "expires": "2025-10-18T20:20:02.321Z",
+            "domain": "hellowork.com",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-10-18T19:30:02.328Z",
+            "lastAccessed": "2025-10-18T19:30:02.328Z"
           }
         ]
       },
       "userData": {},
       "maxErrorScore": 3,
       "errorScoreDecrement": 0.5,
-      "expiresAt": "2025-10-18T19:57:09.320Z",
-      "createdAt": "2025-10-18T19:07:09.320Z",
+      "expiresAt": "2025-10-18T20:20:00.485Z",
+      "createdAt": "2025-10-18T19:30:00.485Z",
       "usageCount": 1,
       "maxUsageCount": 50,
       "errorScore": 0
